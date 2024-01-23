@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <xs:simpleType name="stringType">
+        <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="integerType">
+        <xs:restriction base="xs:integer"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="urlType">
+        <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+
+    <xs:complexType name="IngredientType">
+        <xs:sequence>
+            <xs:element name="fullText" type="stringType"/>
+            <xs:element name="pureName" type="stringType"/>
+            <xs:element name="quantity" type="stringType"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="CocktailRecipeType">
+        <xs:sequence>
+            <xs:element name="name" type="stringType"/>
+            <xs:element name="alcoholPresence" type="stringType"/>
+            <xs:element name="beverageCategory" type="stringType"/>
+            <xs:element name="glassType" type="stringType"/>
+            <xs:element name="preparationTime" type="integerType"/>
+            <xs:element name="imageUrl" type="urlType"/>
+            <xs:element name="ingredients" type="IngredientType" minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="instructions" type="stringType"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- Root element -->
+    <xs:element name="CocktailRecipe" type="CocktailRecipeType"/>
+
+</xs:schema>
