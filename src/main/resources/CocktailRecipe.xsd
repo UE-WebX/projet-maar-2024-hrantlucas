@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+    <!-- Style XSD : tranches de salami -->
+
+    <!-- Elements simples -->
+
+    <xsd:element name="name" type="xsd:string"/>
+    <xsd:element name="alcoholPresence" type="xsd:string"/>
+    <xsd:element name="beverageCategory" type="xsd:string"/>
+    <xsd:element name="glassType" type="xsd:string"/>
+    <xsd:element name="preparationTime" type="xsd:duration"/>
+    <xsd:element name="imageUrl" type="xsd:string"/>
+    <xsd:element name="syntheticIngredient" type="xsd:string"/>
+    <xsd:element name="fullText" type="xsd:string"/>
+    <xsd:element name="pureName" type="xsd:string"/>
+    <xsd:element name="quantity" type="xsd:string"/>
+    <xsd:element name="instructions" type="xsd:string"/>
+
+
+    <!-- Elements complexes -->
+
+    <xsd:element name="recipeType">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="alcoholPresence"/>
+                <xsd:element ref="beverageCategory"/>
+                <xsd:element ref="glassType"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="syntheticIngredientList">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="syntheticIngredient" minOccurs="1" maxOccurs="unbounded"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="ingredient">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="fullText"/>
+                <xsd:element ref="pureName"/>
+                <xsd:element ref="quantity"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="ingredientList">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="ingredient" minOccurs="1" maxOccurs="unbounded"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+
+    <!-- Root element -->
+
+    <xsd:element name="cocktailRecipe">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="name"/>
+                <xsd:element ref="recipeType"/>
+                <xsd:element ref="preparationTime"/>
+                <xsd:element ref="imageUrl"/>
+                <xsd:element ref="syntheticIngredientList"/>
+                <xsd:element ref="ingredientList"/>
+                <xsd:element ref="instructions"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+</xsd:schema>
