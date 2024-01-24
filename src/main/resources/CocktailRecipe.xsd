@@ -59,7 +59,7 @@
 
     <!-- Root element -->
 
-    <xsd:element name="CocktailRecipeType">
+    <xsd:element name="cocktailRecipe">
         <xsd:complexType>
             <xsd:sequence>
                 <xsd:element ref="name"/>
