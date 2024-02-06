@@ -10,9 +10,14 @@ import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.hrantlucas.exception.CuisineTypeNotValidException;
-import org.json.JSONObject;
-import org.json.XML;
+import org.hrantlucas.model.Recipe;
+import org.hrantlucas.service.RecipeService;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import java.io.File;
+import java.io.StringWriter;
 import java.util.Random;
 
 /**
@@ -37,7 +42,7 @@ public class RecipeEndpoint {
     @GET
     @Path("/meal/{cuisineType}")
     @Produces(MediaType.APPLICATION_XML)
-    public Response getRecipeByCuisineType(@PathParam("cuisineType") String cuisineType) throws CuisineTypeNotValidException {
+    public Response getRecipeByCuisineType(@PathParam("cuisineType") String cuisineType) throws CuisineTypeNotValidException, JAXBException {
         // get the response by the cuisine type
         JsonObject jsonResponse = client.target(EXTERNAL_URI)
                 .path("api/recipes/v2/")
@@ -48,7 +53,6 @@ public class RecipeEndpoint {
                 .queryParam("field", "cuisineType")
                 .request(MediaType.APPLICATION_JSON)
                 .get(JsonObject.class);
-        System.out.println(jsonResponse);
         // number of recipes in the response
         int count = Integer.parseInt(jsonResponse.get("to").toString());
 
@@ -68,9 +72,16 @@ public class RecipeEndpoint {
                 .request(MediaType.APPLICATION_JSON)
                 .get(JsonObject.class).get("recipe").asJsonObject();
 
-        // Converting JSON to XML
-        JSONObject tempJsonObject = new JSONObject(jsonFullRecipe.toString());
-        String xmlRecipe = "<recipe>" + XML.toString(tempJsonObject) + "</recipe>";
+        // Getting storing the recipe from the json with RecipeService
+        Recipe recipe = RecipeService.getRecipeFromJsonResponse(jsonFullRecipe);
+
+        // Converting XMLRootElement class objet to XML string
+        JAXBContext context = JAXBContext.newInstance(Recipe.class);
+        Marshaller mar = context.createMarshaller();
+        mar.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+        StringWriter out = new StringWriter();
+        mar.marshal(recipe, out);
+        String xmlRecipe = out.toString();
 
         return Response.ok(xmlRecipe, MediaType.APPLICATION_XML)
                 .build();
