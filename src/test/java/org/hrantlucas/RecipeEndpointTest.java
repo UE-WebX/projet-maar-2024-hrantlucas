@@ -11,7 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class MyResourceTest {
+public class RecipeEndpointTest {
 
     private HttpServer server;
     private WebTarget target;
@@ -19,7 +19,7 @@ public class MyResourceTest {
     @BeforeEach
     public void setUp() throws Exception {
         // start the server
-        server = Main.startServer();
+        server = RecipeApplication.startServer();
         // create the client
         Client c = ClientBuilder.newClient();
 
@@ -29,7 +29,7 @@ public class MyResourceTest {
         // --
         // c.configuration().enable(new org.glassfish.jersey.media.json.JsonJaxbFeature());
 
-        target = c.target(Main.BASE_URI);
+        target = c.target(RecipeApplication.BASE_URI);
     }
 
     @AfterEach

@@ -8,29 +8,18 @@
     <xsd:element name="mealType" type="xsd:string"/>
     <xsd:element name="dishType" type="xsd:string"/>
     <xsd:element name="cuisineType" type="xsd:string"/>
-    <xsd:element name="totalTime" type="xsd:int"/>
+    <xsd:element name="totalTime" type="xsd:string"/>
     <xsd:element name="image" type="xsd:string"/>
     <xsd:element name="url" type="xsd:string"/>
-    <xsd:element name="ingredientLines" type="xsd:string"/>
+    <xsd:element name="ingredientLine" type="xsd:string"/>
     <xsd:element name="text" type="xsd:string"/>
     <xsd:element name="food" type="xsd:string"/>
     <xsd:element name="quantity" type="xsd:string"/>
-    <xsd:element name="cautions" type="xsd:string"/>
-    <xsd:element name="calories" type="xsd:int"/>
+    <xsd:element name="caution" type="xsd:string"/>
+    <xsd:element name="calories" type="xsd:string"/>
 
     <!-- Elements complexes -->
-
-    <xsd:element name="detailedRecipeType">
-        <xsd:complexType>
-            <xsd:all>
-                <xsd:element ref="mealType"/>
-                <xsd:element ref="dishType"/>
-                <xsd:element ref="cuisineType"/>
-            </xsd:all>
-        </xsd:complexType>
-    </xsd:element>
-
-    <xsd:element name="detailedIngredient">
+    <xsd:element name="ingredient">
         <xsd:complexType>
             <xsd:all>
                 <xsd:element ref="text"/>
@@ -41,26 +30,50 @@
         </xsd:complexType>
     </xsd:element>
 
-    <xsd:element name="detailedIngredients">
+    <xsd:element name="cuisineTypes">
         <xsd:complexType>
             <xsd:sequence>
-                <xsd:element ref="detailedIngredient" maxOccurs="unbounded"/>
+                <xsd:element ref="cuisineType" maxOccurs="unbounded"/>
             </xsd:sequence>
         </xsd:complexType>
     </xsd:element>
 
-    <xsd:element name="syntheticIngredients">
+    <xsd:element name="mealTypes">
         <xsd:complexType>
             <xsd:sequence>
-                <xsd:element ref="ingredientLines" maxOccurs="unbounded"/>
+                <xsd:element ref="mealType" maxOccurs="unbounded"/>
             </xsd:sequence>
         </xsd:complexType>
     </xsd:element>
 
-    <xsd:element name="allergens">
+    <xsd:element name="dishTypes">
         <xsd:complexType>
             <xsd:sequence>
-                <xsd:element ref="cautions" maxOccurs="unbounded"/>
+                <xsd:element ref="dishType" maxOccurs="unbounded"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="ingredients">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="ingredient" maxOccurs="unbounded"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="ingredientLines">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="ingredientLine" maxOccurs="unbounded"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="cautions">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="caution" minOccurs="0" maxOccurs="unbounded"/>
             </xsd:sequence>
         </xsd:complexType>
     </xsd:element>
@@ -70,13 +83,15 @@
         <xsd:complexType>
             <xsd:all>
                 <xsd:element ref="label"/>
-                <xsd:element ref="detailedRecipeType"/>
+                <xsd:element ref="mealTypes"/>
+                <xsd:element ref="dishTypes"/>
+                <xsd:element ref="cuisineTypes"/>
                 <xsd:element ref="totalTime"/>
                 <xsd:element ref="image"/>
                 <xsd:element ref="url"/>
-                <xsd:element ref="syntheticIngredients"/>
-                <xsd:element ref="detailedIngredients"/>
-                <xsd:element ref="allergens"/>
+                <xsd:element ref="ingredientLines"/>
+                <xsd:element ref="ingredients"/>
+                <xsd:element ref="cautions"/>
                 <xsd:element ref="calories"/>
             </xsd:all>
         </xsd:complexType>
