@@ -18,6 +18,9 @@
     <xsd:element name="caution" type="xsd:string"/>
     <xsd:element name="calories" type="xsd:string"/>
 
+    <xsd:element name="errorCode" type="xsd:string"/>
+    <xsd:element name="errorMessage" type="xsd:string"/>
+
     <!-- Elements complexes -->
     <xsd:element name="ingredient">
         <xsd:complexType>
@@ -78,7 +81,6 @@
         </xsd:complexType>
     </xsd:element>
 
-<!--    Root Element-->
     <xsd:element name="recipe">
         <xsd:complexType>
             <xsd:all>
@@ -94,6 +96,29 @@
                 <xsd:element ref="cautions"/>
                 <xsd:element ref="calories"/>
             </xsd:all>
+        </xsd:complexType>
+    </xsd:element>
+
+    <!-- Defining error element -->
+
+    <xsd:element name="error">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="errorCode"/>
+                <xsd:element ref="errorMessage"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+
+    <!-- Root element -->
+
+    <xsd:element name="response">
+        <xsd:complexType>
+            <xsd:choice>
+                <xsd:element ref="recipe"/>
+                <xsd:element ref="error"/>
+            </xsd:choice>
         </xsd:complexType>
     </xsd:element>
 
