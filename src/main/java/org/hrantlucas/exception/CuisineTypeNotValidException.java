@@ -22,7 +22,7 @@ public class CuisineTypeNotValidException extends Exception implements Exception
 
         String errorResponse = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<error>" +
-                "<errorCode>" + "403" + "</errorCode>" +
+                "<errorCode>" + "400" + "</errorCode>" +
                 "<errorMessage>" + e.getMessage() + "</errorMessage>" +
                 "</error>";
 
