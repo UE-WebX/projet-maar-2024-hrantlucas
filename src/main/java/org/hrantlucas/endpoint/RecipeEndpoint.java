@@ -84,5 +84,6 @@ public class RecipeEndpoint {
 
         return Response.ok(xmlRecipe, MediaType.APPLICATION_XML)
                 .build();
+
     }
 }
