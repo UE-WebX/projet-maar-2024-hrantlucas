@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+    <!-- Style XSD : tranches de salami -->
+
+    <!-- Elements simples -->
+    <xsd:element name="label" type="xsd:string"/>
+    <xsd:element name="mealType" type="xsd:string"/>
+    <xsd:element name="dishType" type="xsd:string"/>
+    <xsd:element name="cuisineType" type="xsd:string"/>
+    <xsd:element name="totalTime" type="xsd:string"/>
+    <xsd:element name="image" type="xsd:string"/>
+    <xsd:element name="url" type="xsd:string"/>
+    <xsd:element name="ingredientLine" type="xsd:string"/>
+    <xsd:element name="text" type="xsd:string"/>
+    <xsd:element name="food" type="xsd:string"/>
+    <xsd:element name="quantity" type="xsd:string"/>
+    <xsd:element name="caution" type="xsd:string"/>
+    <xsd:element name="calories" type="xsd:string"/>
+
+    <xsd:element name="errorCode" type="xsd:string"/>
+    <xsd:element name="errorMessage" type="xsd:string"/>
+
+    <!-- Elements complexes -->
+    <xsd:element name="ingredient">
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element ref="text"/>
+                <xsd:element ref="food"/>
+                <xsd:element ref="quantity"/>
+                <xsd:element ref="image"/>
+            </xsd:all>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="cuisineTypes">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="cuisineType" maxOccurs="unbounded"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="mealTypes">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="mealType" maxOccurs="unbounded"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="dishTypes">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="dishType" maxOccurs="unbounded"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="ingredients">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="ingredient" maxOccurs="unbounded"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="ingredientLines">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="ingredientLine" maxOccurs="unbounded"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="cautions">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="caution" minOccurs="0" maxOccurs="unbounded"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="recipe">
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element ref="label"/>
+                <xsd:element ref="mealTypes"/>
+                <xsd:element ref="dishTypes"/>
+                <xsd:element ref="cuisineTypes"/>
+                <xsd:element ref="totalTime"/>
+                <xsd:element ref="image"/>
+                <xsd:element ref="url"/>
+                <xsd:element ref="ingredientLines"/>
+                <xsd:element ref="ingredients"/>
+                <xsd:element ref="cautions"/>
+                <xsd:element ref="calories"/>
+            </xsd:all>
+        </xsd:complexType>
+    </xsd:element>
+
+    <!-- Defining error element -->
+
+    <xsd:element name="error">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="errorCode"/>
+                <xsd:element ref="errorMessage"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+
+    <!-- Root element -->
+
+    <xsd:element name="response">
+        <xsd:complexType>
+            <xsd:choice>
+                <xsd:element ref="recipe"/>
+                <xsd:element ref="error"/>
+            </xsd:choice>
+        </xsd:complexType>
+    </xsd:element>
+
+</xsd:schema>
