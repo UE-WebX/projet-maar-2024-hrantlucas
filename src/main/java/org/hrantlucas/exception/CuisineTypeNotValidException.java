@@ -8,6 +8,7 @@ import jakarta.ws.rs.ext.Provider;
 @Provider
 public class CuisineTypeNotValidException extends Exception implements ExceptionMapper<CuisineTypeNotValidException> {
 
+
     public CuisineTypeNotValidException() {
         super("Provided cuisine type is invalid or unknown, please try again");
     }
@@ -18,7 +19,16 @@ public class CuisineTypeNotValidException extends Exception implements Exception
 
     @Override
     public Response toResponse(CuisineTypeNotValidException e) {
-        return Response.status(400).entity(e.getMessage())
-                .type(MediaType.APPLICATION_XML).build();
+
+        String errorResponse = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<error>" +
+                "<errorCode>" + "400" + "</errorCode>" +
+                "<errorMessage>" + e.getMessage() + "</errorMessage>" +
+                "</error>";
+
+        return Response.status(Response.Status.BAD_REQUEST)
+                .entity(errorResponse)
+                .type(MediaType.APPLICATION_XML)
+                .build();
     }
 }
