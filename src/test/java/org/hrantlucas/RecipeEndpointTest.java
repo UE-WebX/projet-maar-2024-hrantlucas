@@ -3,10 +3,8 @@ package org.hrantlucas;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.WebTarget;
-
 import jakarta.ws.rs.core.Response;
 import org.glassfish.grizzly.http.server.HttpServer;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,7 +40,7 @@ public class RecipeEndpointTest {
     @Test
     public void testGetRecipeByCuisineTypeSuccess() {
         Response response = target.path("/recipe/meal/Asian").request().get();
-        assertEquals( 200, response.getStatus(), "the response doesn't have a 200 http status code");
+        assertEquals(200, response.getStatus(), "the response doesn't have a 200 http status code");
 
         String responseBody = response.readEntity(String.class);
         assertNotNull(responseBody, "the response doesn't have a body");
