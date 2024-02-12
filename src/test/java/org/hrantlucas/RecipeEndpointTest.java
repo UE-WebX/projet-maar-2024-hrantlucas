@@ -9,6 +9,14 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
+
+import java.io.File;
+import java.io.StringReader;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class RecipeEndpointTest {
@@ -37,32 +45,46 @@ public class RecipeEndpointTest {
         server.stop();
     }
 
+    private void validateXmlAgainstXsd(String xmlBody, String xsdPath) throws Exception {
+        SchemaFactory factory = SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
+        Schema schema = factory.newSchema(new File(xsdPath));
+        Validator validator = schema.newValidator();
+        validator.validate(new StreamSource(new StringReader(xmlBody)));
+    }
+
+
     @Test
-    public void testGetRecipeByCuisineTypeSuccess() {
+    public void testGetRecipeByCuisineTypeSuccess() throws Exception {
         Response response = target.path("/recipe/meal/Asian").request().get();
         assertEquals(200, response.getStatus(), "the response doesn't have a 200 http status code");
 
         String responseBody = response.readEntity(String.class);
         assertNotNull(responseBody, "the response doesn't have a body");
         assertTrue(responseBody.contains("<cuisineType>asian</cuisineType>"), "the response doesn't contain the good cuisine type");
+
+        validateXmlAgainstXsd(responseBody, "src/main/resources/CuisineRecipe.xsd");
     }
 
     @Test
-    public void testGetRecipeByCuisineTypeInvalid() {
+    public void testGetRecipeByCuisineTypeInvalid() throws Exception {
         Response response = target.path("/recipe/meal/InvalidCuisine").request().get();
         assertEquals(400, response.getStatus(), "the response doesn't have a 400 http status code");
 
         String responseBody = response.readEntity(String.class);
         assertNotNull(responseBody, "the response doesn't have a body");
         assertTrue(responseBody.contains("<errorCode>400</errorCode>"), "the response doesn't contain the error message");
+
+        validateXmlAgainstXsd(responseBody, "src/main/resources/CuisineRecipe.xsd");
     }
 
     @Test
-    public void testGetRecipeByCuisineTypeWithServerError() {
+    public void testGetRecipeByCuisineTypeWithServerError() throws Exception {
         Response response = target.path("/recipe/InvalidURL").request().get();
         assertEquals(500, response.getStatus(), "the response doesn't have a 500 http status code");
 
         String responseBody = response.readEntity(String.class);
         assertTrue(responseBody.contains("<errorCode>500</errorCode>"), "the response doesn't contain the error message");
+
+        validateXmlAgainstXsd(responseBody, "src/main/resources/CuisineRecipe.xsd");
     }
 }

@@ -14,7 +14,7 @@ public class GenericExceptionMapper implements ExceptionMapper<Throwable> {
         String errorResponse = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<error>" +
                 "<errorCode>" + "500" + "</errorCode>" +
-                "<errorMessage>" + "An error has occurred, please try again" + "</errorMessage>" +
+                "<errorMessage>" + exception.getMessage() + ", an error has occurred, please try again" + "</errorMessage>" +
                 "</error>";
 
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
