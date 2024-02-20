@@ -1,9 +1,7 @@
 package org.hrantlucas.model.drink;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.*;
+import java.util.List;
 
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -25,8 +23,9 @@ public class DrinkRecipe {
     @XmlElement(name = "syntheticList")
     private String syntheticList;
 
+    @XmlElementWrapper
     @XmlElement(name = "detailedIngredient")
-    private DetailedIngredientType detailedIngredient;
+    private List<DetailedIngredientType> detailedIngredients;
 
     @XmlElement(name = "instructions")
     private String instructions;
@@ -74,12 +73,12 @@ public class DrinkRecipe {
         this.syntheticList = syntheticList;
     }
 
-    public DetailedIngredientType getDetailedIngredient() {
-        return detailedIngredient;
+    public List<DetailedIngredientType> getDetailedIngredient() {
+        return detailedIngredients;
     }
 
-    public void setDetailedIngredient(DetailedIngredientType detailedIngredient) {
-        this.detailedIngredient = detailedIngredient;
+    public void setDetailedIngredients(List<DetailedIngredientType> detailedIngredients) {
+        this.detailedIngredients = detailedIngredients;
     }
 
     public String getInstructions() {

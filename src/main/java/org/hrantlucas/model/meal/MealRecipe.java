@@ -1,4 +1,4 @@
-package org.hrantlucas.model;
+package org.hrantlucas.model.meal;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;

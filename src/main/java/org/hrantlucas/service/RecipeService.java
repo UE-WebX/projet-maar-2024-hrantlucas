@@ -2,8 +2,8 @@ package org.hrantlucas.service;
 
 import jakarta.json.JsonObject;
 import jakarta.json.JsonValue;
-import org.hrantlucas.model.Ingredient;
-import org.hrantlucas.model.MealRecipe;
+import org.hrantlucas.model.meal.Ingredient;
+import org.hrantlucas.model.meal.MealRecipe;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.XmlType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "detailedIngredientType")
-class DetailedIngredientType {
+public class DetailedIngredientType {
 
     @XmlElement(name = "completText")
     private String completText;
