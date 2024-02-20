@@ -1,16 +1,16 @@
 package org.hrantlucas.endpoint;
 
+import jakarta.json.JsonArray;
 import jakarta.json.JsonObject;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.hrantlucas.exception.CuisineTypeNotValidException;
-import org.hrantlucas.model.Recipe;
+import org.hrantlucas.model.drink.DetailedType;
+import org.hrantlucas.model.drink.DrinkRecipe;
+import org.hrantlucas.model.MealRecipe;
 import org.hrantlucas.service.RecipeService;
 
 import javax.xml.bind.JAXBContext;
@@ -25,9 +25,12 @@ import java.util.Random;
 @Path("recipe")
 public class RecipeEndpoint {
 
-    private static final String APPLICATION_ID = "8528fa1e";
+    private static final String MEAL_APPLICATION_ID = "8528fa1e";
+    private static final String DRINK_APPLICATION_ID = "1";
     private static final String APPLICATION_KEY = "c22b964fb40477e835dfb7087026ce89";
-    private static final String EXTERNAL_URI = "https://api.edamam.com/";
+    private static final String MEAL_EXTERNAL_URI = "https://api.edamam.com/";
+
+    private static final String DRINK_EXTERNAL_URI = "https://www.thecocktaildb.com/";
     private Client client = ClientBuilder.newClient();
 
     /**
@@ -41,12 +44,12 @@ public class RecipeEndpoint {
     @GET
     @Path("/meal/{cuisineType}")
     @Produces(MediaType.APPLICATION_XML)
-    public Response getRecipeByCuisineType(@PathParam("cuisineType") String cuisineType) throws CuisineTypeNotValidException, JAXBException {
+    public Response getMealByCuisineType(@PathParam("cuisineType") String cuisineType) throws CuisineTypeNotValidException, JAXBException {
         // get the response by the cuisine type
-        JsonObject jsonResponse = client.target(EXTERNAL_URI)
+        JsonObject jsonResponse = client.target(MEAL_EXTERNAL_URI)
                 .path("api/recipes/v2/")
                 .queryParam("type", "public")
-                .queryParam("app_id", APPLICATION_ID)
+                .queryParam("app_id", MEAL_APPLICATION_ID)
                 .queryParam("app_key", APPLICATION_KEY)
                 .queryParam("cuisineType", cuisineType)
                 .queryParam("field", "cuisineType")
@@ -72,10 +75,10 @@ public class RecipeEndpoint {
                 .get(JsonObject.class).get("recipe").asJsonObject();
 
         // Getting storing the recipe from the json with RecipeService
-        Recipe recipe = RecipeService.getRecipeFromJsonResponse(jsonFullRecipe);
+        MealRecipe recipe = RecipeService.getRecipeFromJsonResponse(jsonFullRecipe);
 
         // Converting XMLRootElement class objet to XML string
-        JAXBContext context = JAXBContext.newInstance(Recipe.class);
+        JAXBContext context = JAXBContext.newInstance(MealRecipe.class);
         Marshaller mar = context.createMarshaller();
         mar.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
         StringWriter out = new StringWriter();
@@ -84,5 +87,65 @@ public class RecipeEndpoint {
 
         return Response.ok(xmlRecipe, MediaType.APPLICATION_XML)
                 .build();
+    }
+
+
+    /**
+     * Method handling HTTP GET requests. The returned object will be sent
+     * to the client as "application/xml" media type.
+     *
+     * @param alcoholic true for alcoholic drink false for non-alcoholic.
+     * @return recipe that will be returned as an "application/xml" response.
+     */
+    @GET
+    @Path("/drink")
+    @Produces(MediaType.APPLICATION_XML)
+    public Response getCocktail(@QueryParam("alcoholic") Boolean alcoholic) throws JAXBException {
+
+        JsonObject jsonResponse;
+
+        // if not specified choose randomly between alcoholic and non-alcoholic cocktail
+        if(alcoholic == null) alcoholic = new Random().nextBoolean();
+
+
+        // get the response of the drink list with alcoholic parameter
+        jsonResponse = client.target(DRINK_EXTERNAL_URI)
+                .path("/api/json/v1/1/filter.php")
+                .queryParam("a", alcoholic ? "Alcoholic" : "Non_Alcoholic")
+                .request(MediaType.APPLICATION_JSON)
+                .get(JsonObject.class);
+
+        // get a random drink id from the received list
+        JsonArray drinks = jsonResponse.getJsonArray("drinks");
+        JsonObject jsonDrink = drinks.getJsonObject(new Random().nextInt(drinks.size()));
+        String randomDrinkId = jsonDrink.getString("idDrink");
+
+        // get full details of the random drink
+        jsonResponse = client.target(DRINK_EXTERNAL_URI)
+                .path("/api/json/v1/1/lookup.php")
+                .queryParam("i", randomDrinkId)
+                .request(MediaType.APPLICATION_JSON)
+                .get(JsonObject.class);
+
+
+
+
+        DetailedType detailedType = new DetailedType();
+        detailedType.setIsAlcoholic(jsonDrink.getString("strAlcoholic"));
+        detailedType.setCategory(jsonDrink.getString("strCategory"));
+        detailedType.setGlassType(jsonDrink.getString("strGlass"));
+
+
+
+        DrinkRecipe drinkRecipe = new DrinkRecipe();
+        drinkRecipe.setCocktailName(jsonDrink.getString("strDrink"));
+        drinkRecipe.setDetailedType(detailedType);
+        drinkRecipe.setImageUrl(jsonDrink.getString("strDrinkThumb"));
+        drinkRecipe.setInstructions(jsonDrink.getString("strInstructions"));
+
+
+
+
+        return null;
     }
 }

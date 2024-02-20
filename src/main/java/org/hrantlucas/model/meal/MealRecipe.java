@@ -6,7 +6,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 
 @XmlRootElement(name = "recipe")
-public class Recipe {
+public class MealRecipe {
     private String label;
 
     private List<String> mealTypes;
@@ -29,7 +29,7 @@ public class Recipe {
 
     private String calories;
 
-    public Recipe() {
+    public MealRecipe() {
 
     }
 
