@@ -19,6 +19,12 @@
         </xsd:all>
     </xsd:complexType>
 
+    <xsd:complexType name="detailedIngredientsType">
+        <xsd:sequence>
+            <xsd:element name="detailedIngredient" type="detailedIngredientType" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
     <xsd:complexType name="recipeType">
         <xsd:all>
             <xsd:element name="cocktailName" type="xsd:string"/>
@@ -26,7 +32,7 @@
             <xsd:element name="preparationTime" type="xsd:string"/>
             <xsd:element name="imageUrl" type="xsd:string"/>
             <xsd:element name="syntheticList" type="xsd:string"/>
-            <xsd:element name="detailedIngredient" type="detailedIngredientType"/>
+            <xsd:element name="detailedIngredients" type="detailedIngredientsType"/>
             <xsd:element name="instructions" type="xsd:string"/>
         </xsd:all>
     </xsd:complexType>
@@ -38,12 +44,7 @@
         </xsd:all>
     </xsd:complexType>
 
-    <xsd:complexType name="responseType">
-        <xsd:choice>
-            <xsd:element name="recipe" type="recipeType"/>
-            <xsd:element name="error" type="errorType"/>
-        </xsd:choice>
-    </xsd:complexType>
-
-    <xsd:element name="response" type="responseType"/>
+    <!-- Root elements -->
+    <xsd:element name="recipe" type="recipeType"/>
+    <xsd:element name="error" type="errorType"/>
 </xsd:schema>

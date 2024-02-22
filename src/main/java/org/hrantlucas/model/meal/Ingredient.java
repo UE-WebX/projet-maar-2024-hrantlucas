@@ -1,4 +1,4 @@
-package org.hrantlucas.model;
+package org.hrantlucas.model.meal;
 
 public class Ingredient {
     private String text;
