@@ -12,7 +12,8 @@ import org.hrantlucas.model.drink.DetailedIngredientType;
 import org.hrantlucas.model.drink.DetailedType;
 import org.hrantlucas.model.drink.DrinkRecipe;
 import org.hrantlucas.model.meal.MealRecipe;
-import org.hrantlucas.service.RecipeService;
+import org.hrantlucas.service.DrinkRecipeService;
+import org.hrantlucas.service.MealRecipeService;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -78,7 +79,7 @@ public class RecipeEndpoint {
                 .get(JsonObject.class).get("recipe").asJsonObject();
 
         // Getting storing the recipe from the json with RecipeService
-        MealRecipe recipe = RecipeService.getRecipeFromJsonResponse(jsonFullRecipe);
+        MealRecipe recipe = MealRecipeService.getRecipeFromJsonResponse(jsonFullRecipe);
 
         // Converting XMLRootElement class objet to XML string
         String xmlRecipe = convertObjectToXML(recipe);
@@ -140,45 +141,7 @@ public class RecipeEndpoint {
                 .getJsonObject(0);
 
 
-        // initializing the detailed type object
-        DetailedType detailedType = new DetailedType();
-        detailedType.setIsAlcoholic(jsonFullDrink.getString("strAlcoholic"));
-        detailedType.setCategory(jsonFullDrink.getString("strCategory"));
-        detailedType.setGlassType(jsonFullDrink.getString("strGlass"));
-
-        // initializing ingredients object list
-        StringBuilder syntheticListBuilder = new StringBuilder();
-        List<DetailedIngredientType> detailedIngredients = new ArrayList<>();
-        for (int i = 1; i <= 15; i++) {
-            String ingredient = jsonFullDrink.getString("strIngredient" + i, null);
-            String measure = jsonFullDrink.getString("strMeasure" + i, null);
-            if (ingredient != null && !ingredient.isEmpty()) {
-                DetailedIngredientType ingredientDetail = new DetailedIngredientType();
-                String completeText = measure != null ? measure + "of " + ingredient : ingredient;
-                ingredientDetail.setCompletText(completeText);
-                ingredientDetail.setIngredientName(ingredient);
-                ingredientDetail.setIngredientQuantity(measure != null ? measure : "N/A");
-                detailedIngredients.add(ingredientDetail);
-
-                if (syntheticListBuilder.length() > 0) {
-                    syntheticListBuilder.append(", ");
-                }
-                syntheticListBuilder.append(completeText);
-            } else {
-                break; // end the loop if no ingredient found
-            }
-
-        }
-
-        // initializing the drink recipe object
-        DrinkRecipe drinkRecipe = new DrinkRecipe();
-        drinkRecipe.setPreparationTime("No data"); // only to validate xsd
-        drinkRecipe.setSyntheticList(syntheticListBuilder.toString());
-        drinkRecipe.setCocktailName(jsonFullDrink.getString("strDrink"));
-        drinkRecipe.setDetailedType(detailedType);
-        drinkRecipe.setImageUrl(jsonFullDrink.getString("strDrinkThumb"));
-        drinkRecipe.setInstructions(jsonFullDrink.getString("strInstructions"));
-        drinkRecipe.setDetailedIngredients(detailedIngredients);
+        DrinkRecipe drinkRecipe = DrinkRecipeService.getRecipeFromJsonResponse(jsonFullDrink);
 
         String xmlDrink = convertObjectToXML(drinkRecipe);
 

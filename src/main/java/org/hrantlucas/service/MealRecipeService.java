@@ -8,7 +8,7 @@ import org.hrantlucas.model.meal.MealRecipe;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecipeService {
+public class MealRecipeService {
     public static MealRecipe getRecipeFromJsonResponse(JsonObject jsonObject) {
         MealRecipe recipe = new MealRecipe();
 
