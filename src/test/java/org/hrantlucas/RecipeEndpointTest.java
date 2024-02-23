@@ -13,7 +13,6 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
-
 import java.io.File;
 import java.io.StringReader;
 
@@ -34,7 +33,6 @@ public class RecipeEndpointTest {
         // uncomment the following line if you want to enable
         // support for JSON in the client (you also have to uncomment
         // dependency on jersey-media-json module in pom.xml and Main.startServer())
-        // --
         // c.configuration().enable(new org.glassfish.jersey.media.json.JsonJaxbFeature());
 
         target = c.target(RecipeApplication.BASE_URI);
@@ -54,7 +52,7 @@ public class RecipeEndpointTest {
 
 
     @Test
-    public void testGetRecipeByCuisineTypeSuccess() throws Exception {
+    public void testGetMealByCuisineTypeSuccess() throws Exception {
         Response response = target.path("/recipe/meal/Asian").request().get();
         assertEquals(200, response.getStatus(), "the response doesn't have a 200 http status code");
 
@@ -66,7 +64,7 @@ public class RecipeEndpointTest {
     }
 
     @Test
-    public void testGetRecipeByCuisineTypeInvalid() throws Exception {
+    public void testGetMealByCuisineTypeInvalid() throws Exception {
         Response response = target.path("/recipe/meal/InvalidCuisine").request().get();
         assertEquals(400, response.getStatus(), "the response doesn't have a 400 http status code");
 
@@ -78,7 +76,7 @@ public class RecipeEndpointTest {
     }
 
     @Test
-    public void testGetRecipeByCuisineTypeWithServerError() throws Exception {
+    public void testGetMealByCuisineTypeWithServerError() throws Exception {
         Response response = target.path("/recipe/InvalidURL").request().get();
         assertEquals(500, response.getStatus(), "the response doesn't have a 500 http status code");
 
@@ -86,5 +84,40 @@ public class RecipeEndpointTest {
         assertTrue(responseBody.contains("<errorCode>500</errorCode>"), "the response doesn't contain the error message");
 
         validateXmlAgainstXsd(responseBody, "src/main/resources/CuisineRecipe.xsd");
+    }
+
+    @Test
+    public void testGetCocktailByTypeSuccess() throws Exception {
+        Response response = target.path("/recipe/drink")
+                .queryParam("a", "Alcoholic").request().get();
+        assertEquals(200, response.getStatus(), "the response doesn't have a 200 http status code");
+
+        String responseBody = response.readEntity(String.class);
+        assertNotNull(responseBody, "the response doesn't have a body");
+        assertTrue(responseBody.contains("<isAlcoholic>Alcoholic</isAlcoholic>"), "the response doesn't contain the good cocktail type");
+
+        validateXmlAgainstXsd(responseBody, "src/main/resources/CocktailRecipe.xsd");
+    }
+
+    @Test
+    public void testGetCocktailByRandomSuccess() throws Exception {
+        Response response = target.path("/recipe/drink").request().get();
+        assertEquals(200, response.getStatus(), "the response doesn't have a 200 http status code");
+
+        String responseBody = response.readEntity(String.class);
+        assertNotNull(responseBody, "the response doesn't have a body");
+
+        validateXmlAgainstXsd(responseBody, "src/main/resources/CocktailRecipe.xsd");
+    }
+
+    @Test
+    public void testGetCocktailWithServerError() throws Exception {
+        Response response = target.path("/recipe/drink/InvalidURL").request().get();
+        assertEquals(500, response.getStatus(), "the response doesn't have a 500 http status code");
+
+        String responseBody = response.readEntity(String.class);
+        assertTrue(responseBody.contains("<errorCode>500</errorCode>"), "the response doesn't contain the error message");
+
+        validateXmlAgainstXsd(responseBody, "src/main/resources/CocktailRecipe.xsd");
     }
 }
