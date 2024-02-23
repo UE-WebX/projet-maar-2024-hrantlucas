@@ -89,7 +89,7 @@ public class RecipeEndpointTest {
     @Test
     public void testGetCocktailByTypeSuccess() throws Exception {
         Response response = target.path("/recipe/drink")
-                .queryParam("a", "Alcoholic").request().get();
+                .queryParam("alcoholic", "true").request().get();
         assertEquals(200, response.getStatus(), "the response doesn't have a 200 http status code");
 
         String responseBody = response.readEntity(String.class);

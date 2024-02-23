@@ -96,8 +96,6 @@ public class RecipeEndpoint {
     @Produces(MediaType.APPLICATION_XML)
     public Response getCocktail(@QueryParam("alcoholic") Boolean alcoholic) throws JAXBException {
 
-        JsonObject jsonResponse;
-
         // if not specified choose randomly between alcoholic and non-alcoholic cocktail
         if (alcoholic == null) alcoholic = new Random().nextBoolean();
 
