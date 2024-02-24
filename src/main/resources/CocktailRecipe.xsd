@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+    <!-- Style XSD : store vénitien -->
+
+    <xsd:complexType name="detailedType">
+        <xsd:all>
+            <xsd:element name="isAlcoholic" type="xsd:string"/>
+            <xsd:element name="category" type="xsd:string"/>
+            <xsd:element name="glassType" type="xsd:string"/>
+        </xsd:all>
+    </xsd:complexType>
+
+    <xsd:complexType name="detailedIngredientType">
+        <xsd:all>
+            <xsd:element name="completText" type="xsd:string"/>
+            <xsd:element name="ingredientName" type="xsd:string"/>
+            <xsd:element name="ingredientQuantity" type="xsd:string"/>
+        </xsd:all>
+    </xsd:complexType>
+
+    <xsd:complexType name="detailedIngredientsType">
+        <xsd:sequence>
+            <xsd:element name="detailedIngredient" type="detailedIngredientType" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="recipeType">
+        <xsd:all>
+            <xsd:element name="cocktailName" type="xsd:string"/>
+            <xsd:element name="detailedType" type="detailedType"/>
+            <xsd:element name="preparationTime" type="xsd:string"/>
+            <xsd:element name="imageUrl" type="xsd:string"/>
+            <xsd:element name="syntheticList" type="xsd:string"/>
+            <xsd:element name="detailedIngredients" type="detailedIngredientsType"/>
+            <xsd:element name="instructions" type="xsd:string"/>
+        </xsd:all>
+    </xsd:complexType>
+
+    <xsd:complexType name="errorType">
+        <xsd:all>
+            <xsd:element name="errorCode" type="xsd:string"/>
+            <xsd:element name="errorMessage" type="xsd:string"/>
+        </xsd:all>
+    </xsd:complexType>
+
+    <!-- Root elements -->
+    <xsd:element name="recipe" type="recipeType"/>
+    <xsd:element name="error" type="errorType"/>
+</xsd:schema>
