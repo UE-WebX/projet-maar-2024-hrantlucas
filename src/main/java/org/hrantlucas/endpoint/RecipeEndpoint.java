@@ -8,8 +8,6 @@ import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.hrantlucas.exception.CuisineTypeNotValidException;
-import org.hrantlucas.model.drink.DetailedIngredientType;
-import org.hrantlucas.model.drink.DetailedType;
 import org.hrantlucas.model.drink.DrinkRecipe;
 import org.hrantlucas.model.meal.MealRecipe;
 import org.hrantlucas.service.DrinkRecipeService;
@@ -19,8 +17,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -88,17 +84,6 @@ public class RecipeEndpoint {
                 .build();
     }
 
-    // convert an object to a XML string
-    public String convertObjectToXML(Object o) throws JAXBException {
-        JAXBContext context = JAXBContext.newInstance(o.getClass());
-        Marshaller marshaller = context.createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-        StringWriter writer = new StringWriter();
-        marshaller.marshal(o, writer);
-        return writer.toString();
-    }
-
-
     /**
      * Method handling HTTP GET requests. The returned object will be sent
      * to the client as "application/xml" media type.
@@ -111,10 +96,8 @@ public class RecipeEndpoint {
     @Produces(MediaType.APPLICATION_XML)
     public Response getCocktail(@QueryParam("alcoholic") Boolean alcoholic) throws JAXBException {
 
-        JsonObject jsonResponse;
-
         // if not specified choose randomly between alcoholic and non-alcoholic cocktail
-        if(alcoholic == null) alcoholic = new Random().nextBoolean();
+        if (alcoholic == null) alcoholic = new Random().nextBoolean();
 
 
         // get the response of the drink list with alcoholic parameter
@@ -146,5 +129,15 @@ public class RecipeEndpoint {
         String xmlDrink = convertObjectToXML(drinkRecipe);
 
         return Response.ok(xmlDrink, MediaType.APPLICATION_XML).build();
+    }
+
+    // convert an object to an XML string
+    private String convertObjectToXML(Object o) throws JAXBException {
+        JAXBContext context = JAXBContext.newInstance(o.getClass());
+        Marshaller marshaller = context.createMarshaller();
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+        StringWriter writer = new StringWriter();
+        marshaller.marshal(o, writer);
+        return writer.toString();
     }
 }
