@@ -131,7 +131,13 @@ public class RecipeEndpoint {
         return Response.ok(xmlDrink, MediaType.APPLICATION_XML).build();
     }
 
-    // convert an object to an XML string
+    /**
+     * Method converting an object to String with XML stucture
+     *
+     * @param o object to convert to XML.
+     * @return converted object as a String XML.
+     * @throws JAXBException if there is an issue.
+     */
     private String convertObjectToXML(Object o) throws JAXBException {
         JAXBContext context = JAXBContext.newInstance(o.getClass());
         Marshaller marshaller = context.createMarshaller();
