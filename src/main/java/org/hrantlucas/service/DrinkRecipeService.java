@@ -10,8 +10,13 @@ import java.util.List;
 
 public class DrinkRecipeService {
 
-
-    public static DrinkRecipe getRecipeFromJsonResponse(JsonObject jsonFullDrink){
+    /**
+     * Method building DrinkRecipe object based on a JsonObject object.
+     *
+     * @param jsonFullDrink drink recipe as a JsonObject object.
+     * @return DrinkRecipe object
+     */
+    public static DrinkRecipe getRecipeFromJsonResponse(JsonObject jsonFullDrink) {
         // initializing the detailed type object
         DetailedType detailedType = new DetailedType();
         detailedType.setIsAlcoholic(jsonFullDrink.getString("strAlcoholic"));

@@ -9,6 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MealRecipeService {
+
+    /**
+     * Method building MealRecipe object based on a JsonObject object.
+     *
+     * @param jsonObject drink recipe as a JsonObject object.
+     * @return MealRecipe object
+     */
     public static MealRecipe getRecipeFromJsonResponse(JsonObject jsonObject) {
         MealRecipe recipe = new MealRecipe();
 
