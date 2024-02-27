@@ -49,7 +49,6 @@ public class DrinkRecipeService {
 
         // initializing the drink recipe object
         DrinkRecipe drinkRecipe = new DrinkRecipe();
-        drinkRecipe.setPreparationTime("No data"); // only to validate xsd
         drinkRecipe.setSyntheticList(syntheticListBuilder.toString());
         drinkRecipe.setCocktailName(jsonFullDrink.getString("strDrink"));
         drinkRecipe.setDetailedType(detailedType);
