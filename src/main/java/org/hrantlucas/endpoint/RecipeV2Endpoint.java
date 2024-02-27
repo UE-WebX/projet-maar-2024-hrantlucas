@@ -1,5 +1,6 @@
 package org.hrantlucas.endpoint;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.json.JsonArray;
 import jakarta.json.JsonObject;
 import jakarta.ws.rs.*;
@@ -14,6 +15,7 @@ import org.hrantlucas.service.DrinkRecipeService;
 import org.hrantlucas.service.MealRecipeService;
 
 import javax.xml.bind.JAXBException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Random;
 
 /**
@@ -41,7 +43,7 @@ public class RecipeV2Endpoint {
     @GET
     @Path("/meal/{cuisineType}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getMealByCuisineType(@PathParam("cuisineType") String cuisineType) throws CuisineTypeNotValidException, JAXBException {
+    public Response getMealByCuisineType(@PathParam("cuisineType") String cuisineType) throws CuisineTypeNotValidException {
         // get the response by the cuisine type
         JsonObject jsonResponse = client.target(MEAL_EXTERNAL_URI)
                 .path("api/recipes/v2/")
@@ -87,7 +89,7 @@ public class RecipeV2Endpoint {
     @GET
     @Path("/drink")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getCocktail(@QueryParam("alcoholic") Boolean alcoholic) throws JAXBException {
+    public Response getCocktail(@QueryParam("alcoholic") Boolean alcoholic) throws JsonProcessingException {
 
         // if not specified choose randomly between alcoholic and non-alcoholic cocktail
         if (alcoholic == null) alcoholic = new Random().nextBoolean();
@@ -119,6 +121,12 @@ public class RecipeV2Endpoint {
 
         DrinkRecipe drinkRecipe = DrinkRecipeService.getRecipeFromJsonResponse(jsonFullDrink);
 
-        return Response.ok(drinkRecipe, MediaType.APPLICATION_JSON).build();
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonStr = objectMapper.writeValueAsString(drinkRecipe);
+
+        return Response.ok(jsonStr, MediaType.APPLICATION_JSON).build();
     }
+
+
+
 }

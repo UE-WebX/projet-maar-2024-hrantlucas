@@ -1,17 +1,18 @@
-package org.hrantlucas.model.drink;
+package org.hrantlucas.model.drink.v2;
+
 
 import javax.xml.bind.annotation.*;
 import java.util.List;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "recipe")
-public class DrinkRecipe {
+public class DrinkRecipeV2 {
 
     @XmlElement(name = "cocktailName")
     private String cocktailName;
 
     @XmlElement(name = "detailedType")
-    private DetailedType detailedType;
+    private DetailedTypeV2 detailedType;
 
     @XmlElement(name = "imageUrl")
     private String imageUrl;
@@ -21,12 +22,12 @@ public class DrinkRecipe {
 
     @XmlElementWrapper
     @XmlElement(name = "detailedIngredient")
-    private List<DetailedIngredientType> detailedIngredients;
+    private List<DetailedIngredientTypeV2> detailedIngredients;
 
     @XmlElement(name = "instructions")
     private String instructions;
 
-    public DrinkRecipe() {
+    public DrinkRecipeV2() {
     }
 
     public String getCocktailName() {
@@ -37,11 +38,11 @@ public class DrinkRecipe {
         this.cocktailName = cocktailName;
     }
 
-    public DetailedType getDetailedType() {
+    public DetailedTypeV2 getDetailedType() {
         return detailedType;
     }
 
-    public void setDetailedType(DetailedType detailedType) {
+    public void setDetailedType(DetailedTypeV2 detailedType) {
         this.detailedType = detailedType;
     }
 
@@ -61,11 +62,11 @@ public class DrinkRecipe {
         this.syntheticList = syntheticList;
     }
 
-    public List<DetailedIngredientType> getDetailedIngredient() {
+    public List<DetailedIngredientTypeV2> getDetailedIngredient() {
         return detailedIngredients;
     }
 
-    public void setDetailedIngredients(List<DetailedIngredientType> detailedIngredients) {
+    public void setDetailedIngredients(List<DetailedIngredientTypeV2> detailedIngredients) {
         this.detailedIngredients = detailedIngredients;
     }
 
