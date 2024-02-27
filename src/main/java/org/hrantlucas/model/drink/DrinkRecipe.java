@@ -14,9 +14,6 @@ public class DrinkRecipe {
     @XmlElement(name = "detailedType")
     private DetailedType detailedType;
 
-    @XmlElement(name = "preparationTime")
-    private String preparationTime;
-
     @XmlElement(name = "imageUrl")
     private String imageUrl;
 
@@ -47,14 +44,6 @@ public class DrinkRecipe {
 
     public void setDetailedType(DetailedType detailedType) {
         this.detailedType = detailedType;
-    }
-
-    public String getPreparationTime() {
-        return preparationTime;
-    }
-
-    public void setPreparationTime(String preparationTime) {
-        this.preparationTime = preparationTime;
     }
 
     public String getImageUrl() {
