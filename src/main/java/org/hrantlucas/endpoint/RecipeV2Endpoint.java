@@ -7,9 +7,9 @@ import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import org.hrantlucas.exception.CuisineTypeNotValidException;
+import org.hrantlucas.exception.v2.CuisineTypeNotValidV2Exception;
 import org.hrantlucas.model.drink.DrinkRecipe;
-import org.hrantlucas.model.meal.MealRecipe;
+import org.hrantlucas.model.meal.v2.MealRecipeV2;
 import org.hrantlucas.service.DrinkRecipeService;
 import org.hrantlucas.service.MealRecipeService;
 
@@ -36,12 +36,12 @@ public class RecipeV2Endpoint {
      *
      * @param cuisineType cuisine type of the desired recipe.
      * @return meal recipe that will be returned as an "application/json" response.
-     * @throws CuisineTypeNotValidException if the cuisine type is invalid or unknown
+     * @throws CuisineTypeNotValidV2Exception if the cuisine type is invalid or unknown
      */
     @GET
     @Path("/meal/{cuisineType}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getMealByCuisineType(@PathParam("cuisineType") String cuisineType) throws CuisineTypeNotValidException, JAXBException {
+    public Response getMealByCuisineTypeV2(@PathParam("cuisineType") String cuisineType) throws CuisineTypeNotValidV2Exception {
         // get the response by the cuisine type
         JsonObject jsonResponse = client.target(MEAL_EXTERNAL_URI)
                 .path("api/recipes/v2/")
@@ -57,7 +57,7 @@ public class RecipeV2Endpoint {
 
         // if no recipes found, throw an exception
         if (count == 0) {
-            throw new CuisineTypeNotValidException(cuisineType);
+            throw new CuisineTypeNotValidV2Exception("API GET /v2/recipe/meal");
         }
 
         // Finding necessary part of the response
@@ -72,9 +72,9 @@ public class RecipeV2Endpoint {
                 .get(JsonObject.class).get("recipe").asJsonObject();
 
         // Getting storing the recipe from the json with RecipeService
-        MealRecipe recipe = MealRecipeService.getRecipeFromJsonResponse(jsonFullRecipe);
+        MealRecipeV2 recipeV2 = MealRecipeService.getRecipeFromJsonResponseV2(jsonFullRecipe);
 
-        return Response.ok(recipe, MediaType.APPLICATION_JSON).build();
+        return Response.ok(recipeV2, MediaType.APPLICATION_JSON).build();
     }
 
     /**
