@@ -1,68 +1,75 @@
 package org.hrantlucas.model.drink.v2;
 
 
-import javax.xml.bind.annotation.*;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "recipe")
+
 public class DrinkRecipeV2 {
+    @JsonProperty("success")
+    private boolean success;
+    @JsonProperty("name")
+    private String name;
 
-    @XmlElement(name = "cocktailName")
-    private String cocktailName;
+    @JsonProperty("type")
+    private String type;
 
-    @XmlElement(name = "detailedType")
-    private DetailedTypeV2 detailedType;
+    @JsonProperty("alcoholic")
+    private Boolean alcoholic;
 
-    @XmlElement(name = "imageUrl")
-    private String imageUrl;
+    @JsonProperty("imageURL")
+    private String imageURL;
 
-    @XmlElement(name = "syntheticList")
-    private String syntheticList;
+    @JsonProperty("ingredients")
+    private List<String> ingredients;
 
-    @XmlElementWrapper
-    @XmlElement(name = "detailedIngredient")
+    @JsonProperty("detailedIngredients")
     private List<DetailedIngredientTypeV2> detailedIngredients;
 
-    @XmlElement(name = "instructions")
+    @JsonProperty("instructions")
     private String instructions;
 
-    public DrinkRecipeV2() {
+    public String getName() {
+        return name;
     }
 
-    public String getCocktailName() {
-        return cocktailName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setCocktailName(String cocktailName) {
-        this.cocktailName = cocktailName;
+    public String getType() {
+        return type;
     }
 
-    public DetailedTypeV2 getDetailedType() {
-        return detailedType;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public void setDetailedType(DetailedTypeV2 detailedType) {
-        this.detailedType = detailedType;
+    public Boolean getAlcoholic() {
+        return alcoholic;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public void setAlcoholic(Boolean alcoholic) {
+        this.alcoholic = alcoholic;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public String getImageURL() {
+        return imageURL;
     }
 
-    public String getSyntheticList() {
-        return syntheticList;
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
     }
 
-    public void setSyntheticList(String syntheticList) {
-        this.syntheticList = syntheticList;
+    public List<String> getIngredients() {
+        return ingredients;
     }
 
-    public List<DetailedIngredientTypeV2> getDetailedIngredient() {
+    public void setIngredients(List<String> ingredients) {
+        this.ingredients = ingredients;
+    }
+
+    public List<DetailedIngredientTypeV2> getDetailedIngredients() {
         return detailedIngredients;
     }
 
@@ -76,6 +83,14 @@ public class DrinkRecipeV2 {
 
     public void setInstructions(String instructions) {
         this.instructions = instructions;
+    }
+
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public void setSuccess(boolean success) {
+        this.success = success;
     }
 }
 

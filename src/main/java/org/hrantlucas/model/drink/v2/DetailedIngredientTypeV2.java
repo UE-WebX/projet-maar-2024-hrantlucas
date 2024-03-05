@@ -1,31 +1,19 @@
 package org.hrantlucas.model.drink.v2;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "detailedIngredientType")
 public class DetailedIngredientTypeV2 {
 
-    @XmlElement(name = "completText")
-    private String completText;
-
-    @XmlElement(name = "ingredientName")
+    @JsonProperty("name")
     private String ingredientName;
 
-    @XmlElement(name = "ingredientQuantity")
+    @JsonProperty("quantity")
     private String ingredientQuantity;
 
-    public String getCompletText() {
-        return completText;
-    }
+    @JsonProperty("image")
+    private String image;
 
-    public void setCompletText(String completText) {
-        this.completText = completText;
-    }
-
+    // Getters et setters
     public String getIngredientName() {
         return ingredientName;
     }
@@ -40,5 +28,13 @@ public class DetailedIngredientTypeV2 {
 
     public void setIngredientQuantity(String ingredientQuantity) {
         this.ingredientQuantity = ingredientQuantity;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }
