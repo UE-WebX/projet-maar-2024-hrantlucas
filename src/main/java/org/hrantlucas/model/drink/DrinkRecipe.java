@@ -3,7 +3,6 @@ package org.hrantlucas.model.drink;
 import javax.xml.bind.annotation.*;
 import java.util.List;
 
-
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "recipe")
 public class DrinkRecipe {

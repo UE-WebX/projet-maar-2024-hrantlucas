@@ -31,6 +31,7 @@ public class RecipeV2EndpointTest {
     private WebTarget target;
 
     private static final String MEAL_SCHEMA_JSON = "src/main/resources/meal_schema.json";
+    private static final String DRINK_SCHEMA_JSON = "src/main/resources/drink_schema.json";
 
     @BeforeEach
     public void setUp() throws Exception {
@@ -52,11 +53,11 @@ public class RecipeV2EndpointTest {
         server.stop();
     }
 
-    private void validateJsonAgainstSchema(String jsonBody) throws Exception {
+    private void validateJsonAgainstSchema(String jsonBody, String jsonSchemaPath) throws Exception {
         JsonValidationService service = JsonValidationService.newInstance();
         JsonSchema jsonSchema = null;
 
-        try (InputStream schemaStream = Files.newInputStream(Paths.get(MEAL_SCHEMA_JSON))) {
+        try (InputStream schemaStream = Files.newInputStream(Paths.get(jsonSchemaPath))) {
             jsonSchema = service.readSchema(schemaStream);
         } catch (Exception e) {
             System.err.println("Failed to read the JSON schema: " + e);
@@ -88,7 +89,7 @@ public class RecipeV2EndpointTest {
         assertNotNull(responseBody, "the response doesn't have a body");
         assertTrue(responseBody.contains("\"country\":\"asian\""), "the response doesn't contain the good country");
 
-        validateJsonAgainstSchema(responseBody);
+        validateJsonAgainstSchema(responseBody, MEAL_SCHEMA_JSON);
     }
 
     @Test
@@ -100,17 +101,41 @@ public class RecipeV2EndpointTest {
         assertNotNull(responseBody, "the response doesn't have a body");
         assertTrue(responseBody.contains("\"api_status\": \"400\""), "the response doesn't contain the error code");
 
-        validateJsonAgainstSchema(responseBody);
+        validateJsonAgainstSchema(responseBody, MEAL_SCHEMA_JSON);
     }
 
     @Test
-    public void testGetMealByCuisineTypeWithServerError() throws Exception {
+    public void testGetDrinkByTypeSucces() throws Exception {
+        Response response = target.path("/v2/recipe/drink")
+                .queryParam("alcoholic", "true").request().get();
+        assertEquals(200, response.getStatus(), "the response doesn't have a 200 http status code");
+
+        String responseBody = response.readEntity(String.class);
+        assertNotNull(responseBody, "the response doesn't have a body");
+        assertTrue(responseBody.contains("\"alcoholic\":true"), "the response doesn't contain an alcoholic drink");
+
+        validateJsonAgainstSchema(responseBody, DRINK_SCHEMA_JSON);
+    }
+
+    @Test
+    public void testGetCocktailByRandomSuccess() throws Exception {
+        Response response = target.path("/recipe/drink").request().get();
+        assertEquals(200, response.getStatus(), "the response doesn't have a 200 http status code");
+
+        String responseBody = response.readEntity(String.class);
+        assertNotNull(responseBody, "the response doesn't have a body");
+
+        validateJsonAgainstSchema(responseBody, DRINK_SCHEMA_JSON);
+    }
+
+    @Test
+    public void testGetRecipeWithServerError() throws Exception {
         Response response = target.path("/v2/recipe/InvalidURL").request().get();
         assertEquals(500, response.getStatus(), "the response doesn't have a 500 http status code");
 
         String responseBody = response.readEntity(String.class);
         assertTrue(responseBody.contains("\"api_status\": \"500\""), "the response doesn't contain the error code");
 
-        validateJsonAgainstSchema(responseBody);
+        validateJsonAgainstSchema(responseBody, MEAL_SCHEMA_JSON);
     }
 }

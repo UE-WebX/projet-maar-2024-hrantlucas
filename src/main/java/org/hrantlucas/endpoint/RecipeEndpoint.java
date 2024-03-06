@@ -102,7 +102,8 @@ public class RecipeEndpoint {
 
         // get the response of the drink list with alcoholic parameter
         JsonArray drinks = client.target(DRINK_EXTERNAL_URI)
-                .path("/api/json/v1/1/filter.php")
+                .path("/api/json/v1/{apiKey}/filter.php")
+                .resolveTemplate("apiKey", DRINK_APPLICATION_KEY)
                 .queryParam("a", alcoholic ? "Alcoholic" : "Non_Alcoholic")
                 .request(MediaType.APPLICATION_JSON)
                 .get(JsonObject.class)

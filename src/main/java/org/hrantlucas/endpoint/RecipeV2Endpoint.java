@@ -1,5 +1,6 @@
 package org.hrantlucas.endpoint;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.json.JsonArray;
 import jakarta.json.JsonObject;
 import jakarta.ws.rs.*;
@@ -8,12 +9,13 @@ import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.hrantlucas.exception.v2.CuisineTypeNotValidV2Exception;
-import org.hrantlucas.model.drink.DrinkRecipe;
+import org.hrantlucas.model.drink.v2.DrinkRecipeV2;
 import org.hrantlucas.model.meal.v2.MealRecipeV2;
 import org.hrantlucas.service.DrinkRecipeService;
 import org.hrantlucas.service.MealRecipeService;
 
-import javax.xml.bind.JAXBException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.util.Random;
 
 /**
@@ -87,26 +89,25 @@ public class RecipeV2Endpoint {
     @GET
     @Path("/drink")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getCocktail(@QueryParam("alcoholic") Boolean alcoholic) throws JAXBException {
+    public Response getCocktail(@QueryParam("alcoholic") Boolean alcoholic) throws JsonProcessingException {
+        if (alcoholic == null) {
+            alcoholic = new Random().nextBoolean();
+        }
 
-        // if not specified choose randomly between alcoholic and non-alcoholic cocktail
-        if (alcoholic == null) alcoholic = new Random().nextBoolean();
-
-
-        // get the response of the drink list with alcoholic parameter
         JsonArray drinks = client.target(DRINK_EXTERNAL_URI)
-                .path("/api/json/v1/1/filter.php")
+                .path("/api/json/v1/{apiKey}/filter.php")
+                .resolveTemplate("apiKey", DRINK_APPLICATION_KEY)
                 .queryParam("a", alcoholic ? "Alcoholic" : "Non_Alcoholic")
                 .request(MediaType.APPLICATION_JSON)
                 .get(JsonObject.class)
                 .getJsonArray("drinks");
 
-        // get a random drink id from the received list
-        String randomDrinkId = drinks.getJsonObject(new Random().
-                        nextInt(drinks.size()))
-                .getString("idDrink");
+        if (drinks == null || drinks.isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND).entity("No drinks found.").build();
+        }
 
-        // get full details of the random drink
+        String randomDrinkId = drinks.getJsonObject(new Random().nextInt(drinks.size())).getString("idDrink");
+
         JsonObject jsonFullDrink = client.target(DRINK_EXTERNAL_URI)
                 .path("/api/json/v1/{apiKey}/lookup.php")
                 .resolveTemplate("apiKey", DRINK_APPLICATION_KEY)
@@ -116,9 +117,11 @@ public class RecipeV2Endpoint {
                 .getJsonArray("drinks")
                 .getJsonObject(0);
 
+        DrinkRecipeV2 drinkRecipe = DrinkRecipeService.getRecipeFromJsonResponseV2(jsonFullDrink);
 
-        DrinkRecipe drinkRecipe = DrinkRecipeService.getRecipeFromJsonResponse(jsonFullDrink);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonStr = objectMapper.writeValueAsString(drinkRecipe);
 
-        return Response.ok(drinkRecipe, MediaType.APPLICATION_JSON).build();
+        return Response.ok(jsonStr, MediaType.APPLICATION_JSON).build();
     }
 }
