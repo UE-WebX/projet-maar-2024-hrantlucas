@@ -1,6 +1,7 @@
 package org.hrantlucas.endpoint;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.json.JsonArray;
 import jakarta.json.JsonObject;
 import jakarta.ws.rs.*;
@@ -13,8 +14,6 @@ import org.hrantlucas.model.drink.v2.DrinkRecipeV2;
 import org.hrantlucas.model.meal.v2.MealRecipeV2;
 import org.hrantlucas.service.DrinkRecipeService;
 import org.hrantlucas.service.MealRecipeService;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Random;
 

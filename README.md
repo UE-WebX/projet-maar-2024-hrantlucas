@@ -16,12 +16,22 @@
 
 # Les instructions comment utiliser notre API pour les recettes de plats
 1. Quand l'application est lancé, ouvrez votre browser préféré ou un logiciel dedié pour faire des requêtes HTTP (Postman ou Insomnia).
-2. Pour voir une recette aleatoire d'un certain type de cuisine, vous pouvez envoyer une requête GET avec l'URL http://localhost:8080/meal/{cuisineType} où cuisineType est votre type de cuisine désiré.
+2. Pour voir une recette aleatoire d'un certain type de cuisine, vous pouvez envoyer une requête GET avec l'URL: 
+* http://localhost:8080/recipe/meal/{cuisineType} qui renvoie une structure XML.
+* http://localhost:8080/v2/recipe/meal/{cuisineType} qui renvoie une structure JSON. 
+
+Dans les deux cas cuisineType est votre type de cuisine désiré.
 
 # Les instructions comment utiliser notre API pour les recettes de cocktails
 1. Quand l'application est lancé, ouvrez votre browser préféré ou un logiciel dedié pour faire des requêtes HTTP (Postman ou Insomnia).
-2. Pour voir une recette aleatoire (peu importe si c'est un cocktail avec alcool ou sans), vous pouvez envoyer une requête GET avec l'URL http://localhost:8080/recipe/drink.
-3. Pour voir une recette aleatoire en précisant si c'est un cocktail avec alcool ou sans, vous pouvez envoyer une requête GET avec l'URL http://localhost:8080/recipe/drink?a={alcool} où alcool est true si vous voulez un cocktail avec alcool et false si sans alcool.
+2. Pour voir une recette aleatoire (peu importe si c'est un cocktail avec alcool ou sans), vous pouvez envoyer une requête GET avec l'URL:
+* http://localhost:8080/recipe/drink qui renvoie une structure XML.
+* http://localhost:8080/v2/recipe/drink qui renvoie une structure JSON.
+3. Pour voir une recette aleatoire en précisant si c'est un cocktail avec alcool ou sans, vous pouvez envoyer une requête GET avec l'URL:
+* http://localhost:8080/recipe/drink?a={alcool} qui renvoie une structure XML.
+* http://localhost:8080/v2/recipe/drink?a={alcool} qui renvoie une structure JSON.
+
+Dans les deux cas alcool est true si vous voulez un cocktail avec alcool et false si sans alcool.
 
 # Les instructions comment lancer les tests de l'application Recipe
 

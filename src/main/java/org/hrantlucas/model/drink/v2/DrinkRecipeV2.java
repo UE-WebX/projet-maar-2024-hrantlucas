@@ -1,8 +1,9 @@
 package org.hrantlucas.model.drink.v2;
 
 
-import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.List;
 
 
 public class DrinkRecipeV2 {
