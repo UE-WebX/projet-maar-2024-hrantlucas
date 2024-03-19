@@ -60,7 +60,7 @@ public class DrinkRecipeService {
         return drinkRecipe;
     }
 
-    public static DrinkRecipeV2 getRecipeFromJsonResponseV2(JsonObject jsonFullDrink){
+    public static DrinkRecipeV2 getRecipeFromJsonResponseV2(JsonObject jsonFullDrink) {
 
         DrinkRecipeV2 drinkRecipeV2 = new DrinkRecipeV2();
         drinkRecipeV2.setName(jsonFullDrink.getString("strDrink"));
