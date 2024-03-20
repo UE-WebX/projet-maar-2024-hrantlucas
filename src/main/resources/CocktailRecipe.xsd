@@ -29,7 +29,6 @@
         <xsd:all>
             <xsd:element name="cocktailName" type="xsd:string"/>
             <xsd:element name="detailedType" type="detailedType"/>
-            <xsd:element name="preparationTime" type="xsd:string"/>
             <xsd:element name="imageUrl" type="xsd:string"/>
             <xsd:element name="syntheticList" type="xsd:string"/>
             <xsd:element name="detailedIngredients" type="detailedIngredientsType"/>
