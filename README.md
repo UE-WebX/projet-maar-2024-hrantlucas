@@ -42,3 +42,8 @@ Lancer la class **RecipeEndpointTest.java** qui se trouve dans le dossier "src/t
 1. Depuis la console, allez sur le dossier racine du projet.
 2. Si vous voulez lancer tous les tests possibles, exécuter la commande suivante : **mvn test**
 3. Si vous voulez lancer les tests d'une classe spécifique (RecipeEndpointTest par exemple), exécuter la commande suivante : **mvn -Dtest=RecipeEndpointTest test**
+
+# instructions pour générer les fichiers OpenAPI
+1. Depuis la console, aller sur le dossier racine du projet.
+2. exécuter la commande suivante **mvn clean compile swagger:resolve**
+3. les fichiers générés sont dans dans le dossier **/target/openapi**

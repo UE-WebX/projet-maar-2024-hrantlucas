@@ -2,13 +2,19 @@ package org.hrantlucas.endpoint;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.json.JsonArray;
 import jakarta.json.JsonObject;
-import jakarta.ws.rs.*;
-import jakarta.ws.rs.client.Client;
-import jakarta.ws.rs.client.ClientBuilder;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
+import javax.ws.rs.*;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import org.hrantlucas.exception.v2.CuisineTypeNotValidV2Exception;
 import org.hrantlucas.model.drink.v2.DrinkRecipeV2;
 import org.hrantlucas.model.meal.v2.MealRecipeV2;
@@ -42,7 +48,16 @@ public class RecipeV2Endpoint {
     @GET
     @Path("/meal/{cuisineType}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getMealByCuisineTypeV2(@PathParam("cuisineType") String cuisineType) throws CuisineTypeNotValidV2Exception {
+    @Operation(summary = "Get a V2 meal recipe by cuisine type",
+            description = "Returns a V2 meal recipe in JSON format based on the specified cuisine type",
+            responses = {
+                    @ApiResponse(description = "The V2 meal recipe",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = MealRecipeV2.class))),
+                    @ApiResponse(responseCode = "400", description = "Cuisine type not valid"),
+                    @ApiResponse(responseCode = "500", description = "Internal server error")
+            })
+    public Response getMealByCuisineTypeV2(@Parameter(description = "Cuisine type of the desired recipe") @PathParam("cuisineType") String cuisineType) throws CuisineTypeNotValidV2Exception {
         // get the response by the cuisine type
         JsonObject jsonResponse = client.target(MEAL_EXTERNAL_URI)
                 .path("api/recipes/v2/")
@@ -88,7 +103,16 @@ public class RecipeV2Endpoint {
     @GET
     @Path("/drink")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getCocktail(@QueryParam("alcoholic") Boolean alcoholic) throws JsonProcessingException {
+    @Operation(summary = "Get a V2 cocktail recipe",
+            description = "Returns a V2 cocktail recipe in JSON format. The recipe can be alcoholic or non-alcoholic depending on the query parameter",
+            responses = {
+                    @ApiResponse(description = "The V2 drink recipe",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = DrinkRecipeV2.class))),
+                    @ApiResponse(responseCode = "500", description = "Internal server error")
+            })
+
+    public Response getCocktail(@Parameter(description = "true for alcoholic drink, false for non-alcoholic, nothing for random") @QueryParam("alcoholic") Boolean alcoholic) throws JsonProcessingException {
         if (alcoholic == null) {
             alcoholic = new Random().nextBoolean();
         }
