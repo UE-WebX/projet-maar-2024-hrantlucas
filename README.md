@@ -33,7 +33,25 @@ Dans les deux cas cuisineType est votre type de cuisine désiré.
 
 Dans les deux cas alcool est true si vous voulez un cocktail avec alcool et false si sans alcool.
 
-# Les instructions comment lancer les tests de l'application Recipe
+# Les instructions comment utiliser notre API pour les menus
+
+L'API pour les menus permet de générer un menu complet comprenant une entrée, un plat principal, un dessert, et une boisson. Les utilisateurs peuvent spécifier des filtres pour personnaliser le menu selon leurs préférences alimentaires.
+
+## Générer un menu complet
+1. Quand l'application est lancée, ouvrez votre navigateur préféré ou un logiciel dédié pour faire des requêtes HTTP (comme Postman ou Insomnia).
+2. Pour générer un menu complet, vous pouvez envoyer une requête POST avec l'URL:
+    * http://localhost:8080/menu
+3. La requête doit inclure un corps JSON avec les paramètres désirés, par exemple:
+   ```json
+   {
+       "cuisineType": "Italian",
+       "alcoholic": false,
+       "presentIngredient": "water",
+       "maxPreparationTime": 90,
+       "constraints": ["vegetarian"]
+   }
+
+# Les instructions comment lancer les tests de l'application
 
 ## Avec un IDE
 Lancer la class **RecipeEndpointTest.java** qui se trouve dans le dossier "src/test/java/org/hrantlucas", juste en appuyant sur le triangle vert à côté du nom.
