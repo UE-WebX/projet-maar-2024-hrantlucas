@@ -7,21 +7,18 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.json.JsonArray;
 import jakarta.json.JsonObject;
-import javax.ws.rs.*;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import org.hrantlucas.exception.v2.CuisineTypeNotValidV2Exception;
+import org.hrantlucas.exception.v2.DrinkNotFoundException;
 import org.hrantlucas.model.drink.v2.DrinkRecipeV2;
 import org.hrantlucas.model.meal.v2.MealRecipeV2;
 import org.hrantlucas.service.DrinkRecipeService;
 import org.hrantlucas.service.MealRecipeService;
-
-import java.util.Random;
 
 /**
  * Recipe V2 endpoint (exposed at "v2/recipe" path)
@@ -29,12 +26,6 @@ import java.util.Random;
 @Path("v2/recipe")
 public class RecipeV2Endpoint {
 
-    private static final String MEAL_APPLICATION_ID = "8528fa1e";
-    private static final String MEAL_APPLICATION_KEY = "c22b964fb40477e835dfb7087026ce89";
-    private static final String MEAL_EXTERNAL_URI = "https://api.edamam.com/";
-
-    private static final String DRINK_APPLICATION_KEY = "1";
-    private static final String DRINK_EXTERNAL_URI = "https://www.thecocktaildb.com/";
     private Client client = ClientBuilder.newClient();
 
     /**
@@ -58,39 +49,12 @@ public class RecipeV2Endpoint {
                     @ApiResponse(responseCode = "500", description = "Internal server error")
             })
     public Response getMealByCuisineTypeV2(@Parameter(description = "Cuisine type of the desired recipe") @PathParam("cuisineType") String cuisineType) throws CuisineTypeNotValidV2Exception {
-        // get the response by the cuisine type
-        JsonObject jsonResponse = client.target(MEAL_EXTERNAL_URI)
-                .path("api/recipes/v2/")
-                .queryParam("type", "public")
-                .queryParam("app_id", MEAL_APPLICATION_ID)
-                .queryParam("app_key", MEAL_APPLICATION_KEY)
-                .queryParam("cuisineType", cuisineType)
-                .queryParam("field", "cuisineType")
-                .request(MediaType.APPLICATION_JSON)
-                .get(JsonObject.class);
-        // number of recipes in the response
-        int count = Integer.parseInt(jsonResponse.get("to").toString());
+        // Making the call to the Meal API and getting the meal recipe
+        JsonObject jsonObject = MealRecipeService.makeRequestAndGetMealV2AsJsonObject(client, cuisineType, null, "API GET /v2/recipe/meal", null);
+        // Getting the recipe from the json with MealRecipeService
+        MealRecipeV2 mealRecipeV2 = MealRecipeService.getRecipeFromJsonResponseV2(jsonObject);
 
-        // if no recipes found, throw an exception
-        if (count == 0) {
-            throw new CuisineTypeNotValidV2Exception("API GET /v2/recipe/meal");
-        }
-
-        // Finding necessary part of the response
-        JsonObject jsonRecipe = jsonResponse.get("hits").asJsonArray()
-                .get(new Random().nextInt(count)).asJsonObject();
-        String fullRecipeUrl = jsonRecipe.get("_links").asJsonObject()
-                .get("self").asJsonObject()
-                .get("href").toString();
-
-        JsonObject jsonFullRecipe = client.target(fullRecipeUrl.substring(1, fullRecipeUrl.length() - 1))
-                .request(MediaType.APPLICATION_JSON)
-                .get(JsonObject.class).get("recipe").asJsonObject();
-
-        // Getting storing the recipe from the json with RecipeService
-        MealRecipeV2 recipeV2 = MealRecipeService.getRecipeFromJsonResponseV2(jsonFullRecipe);
-
-        return Response.ok(recipeV2, MediaType.APPLICATION_JSON).build();
+        return Response.ok(mealRecipeV2, MediaType.APPLICATION_JSON).build();
     }
 
     /**
@@ -112,34 +76,12 @@ public class RecipeV2Endpoint {
                     @ApiResponse(responseCode = "500", description = "Internal server error")
             })
 
-    public Response getCocktail(@Parameter(description = "true for alcoholic drink, false for non-alcoholic, nothing for random") @QueryParam("alcoholic") Boolean alcoholic) throws JsonProcessingException {
-        if (alcoholic == null) {
-            alcoholic = new Random().nextBoolean();
-        }
+    public Response getCocktail(@Parameter(description = "true for alcoholic drink, false for non-alcoholic, nothing for random") @QueryParam("alcoholic") Boolean alcoholic) throws JsonProcessingException, DrinkNotFoundException {
 
-        JsonArray drinks = client.target(DRINK_EXTERNAL_URI)
-                .path("/api/json/v1/{apiKey}/filter.php")
-                .resolveTemplate("apiKey", DRINK_APPLICATION_KEY)
-                .queryParam("a", alcoholic ? "Alcoholic" : "Non_Alcoholic")
-                .request(MediaType.APPLICATION_JSON)
-                .get(JsonObject.class)
-                .getJsonArray("drinks");
-
-        if (drinks == null || drinks.isEmpty()) {
+        JsonObject jsonFullDrink = DrinkRecipeService.makeRequestAndGetDrinkAsJsonObject(client, alcoholic, null);
+        if (jsonFullDrink == null) {
             return Response.status(Response.Status.NOT_FOUND).entity("No drinks found.").build();
         }
-
-        String randomDrinkId = drinks.getJsonObject(new Random().nextInt(drinks.size())).getString("idDrink");
-
-        JsonObject jsonFullDrink = client.target(DRINK_EXTERNAL_URI)
-                .path("/api/json/v1/{apiKey}/lookup.php")
-                .resolveTemplate("apiKey", DRINK_APPLICATION_KEY)
-                .queryParam("i", randomDrinkId)
-                .request(MediaType.APPLICATION_JSON)
-                .get(JsonObject.class)
-                .getJsonArray("drinks")
-                .getJsonObject(0);
-
         DrinkRecipeV2 drinkRecipe = DrinkRecipeService.getRecipeFromJsonResponseV2(jsonFullDrink);
 
         ObjectMapper objectMapper = new ObjectMapper();

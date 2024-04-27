@@ -19,7 +19,7 @@ public class GenericExceptionMapper implements ExceptionMapper<Throwable> {
         String errorResponse;
         String mediaType;
 
-        if(requestPath.contains("/v2/")) {
+        if(requestPath.contains("/v2/") || requestPath.contains("menu")) {
             mediaType = MediaType.APPLICATION_JSON;
             errorResponse = "{"
                     + "  \"success\": " + false + ","
