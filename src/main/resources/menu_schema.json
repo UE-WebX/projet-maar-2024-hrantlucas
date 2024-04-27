@@ -1,0 +1,128 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "dessert": {
+      "type": "object",
+      "properties": {
+        "country": {"type": "string"},
+        "detailedIngredients": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "image": {"type": "string"},
+              "name": {"type": "string"},
+              "quantity": {"type": "string"}
+            },
+            "required": ["image", "name", "quantity"]
+          }
+        },
+        "imageURL": {"type": "string"},
+        "ingredients": {"type": "string"},
+        "instructions": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "name": {"type": "string"},
+        "preparationTime": {"type": "string"},
+        "source": {"type": "string"},
+        "success": {"type": "boolean"},
+        "type": {"type": "string"}
+      },
+      "required": ["country", "detailedIngredients", "imageURL", "ingredients", "instructions", "name", "preparationTime", "source", "success", "type"]
+    },
+    "drink": {
+      "type": "object",
+      "properties": {
+        "alcoholic": {"type": "boolean"},
+        "detailedIngredients": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "image": {"type": "string"},
+              "ingredientName": {"type": "string"},
+              "ingredientQuantity": {"type": "string"}
+            },
+            "required": ["image", "ingredientName", "ingredientQuantity"]
+          }
+        },
+        "imageURL": {"type": "string"},
+        "ingredients": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "instructions": {
+          "type": "string",
+          "items": {"type": "string"}
+        },
+        "name": {"type": "string"},
+        "success": {"type": "boolean"},
+        "type": {"type": "string"}
+      },
+      "required": ["alcoholic", "detailedIngredients", "imageURL", "ingredients", "instructions", "name", "success", "type"]
+    },
+    "mainCourse": {
+      "type": "object",
+      "properties": {
+        "country": {"type": "string"},
+        "detailedIngredients": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "image": {"type": "string"},
+              "name": {"type": "string"},
+              "quantity": {"type": "string"}
+            },
+            "required": ["image", "name", "quantity"]
+          }
+        },
+        "imageURL": {"type": "string"},
+        "ingredients": {"type": "string"},
+        "instructions": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "name": {"type": "string"},
+        "preparationTime": {"type": "string"},
+        "source": {"type": "string"},
+        "success": {"type": "boolean"},
+        "type": {"type": "string"}
+      },
+      "required": ["country", "detailedIngredients", "imageURL", "ingredients", "instructions", "name", "preparationTime", "source", "success", "type"]
+    },
+    "starter": {
+      "type": "object",
+      "properties": {
+        "country": {"type": "string"},
+        "detailedIngredients": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "image": {"type": "string"},
+              "name": {"type": "string"},
+              "quantity": {"type": "string"}
+            },
+            "required": ["image", "name", "quantity"]
+          }
+        },
+        "imageURL": {"type": "string"},
+        "ingredients": {"type": "string"},
+        "instructions": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "name": {"type": "string"},
+        "preparationTime": {"type": "string"},
+        "source": {"type": "string"},
+        "success": {"type": "boolean"},
+        "type": {"type": "string"}
+      },
+      "required": ["country", "detailedIngredients", "imageURL", "ingredients", "instructions", "name", "preparationTime", "source", "success", "type"]
+    }
+  },
+  "required": ["dessert", "drink", "mainCourse", "starter"]
+}
