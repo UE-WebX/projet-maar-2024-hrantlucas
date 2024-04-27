@@ -2,13 +2,21 @@ package org.hrantlucas.service;
 
 import jakarta.json.JsonObject;
 import jakarta.json.JsonValue;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.MediaType;
+import org.hrantlucas.exception.CuisineTypeNotValidException;
+import org.hrantlucas.exception.v2.CuisineTypeNotValidV2Exception;
 import org.hrantlucas.model.meal.Ingredient;
 import org.hrantlucas.model.meal.MealRecipe;
 import org.hrantlucas.model.meal.v2.IngredientV2;
 import org.hrantlucas.model.meal.v2.MealRecipeV2;
+import org.hrantlucas.model.menu.MenuFilter;
+import org.hrantlucas.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class MealRecipeService {
 
@@ -126,5 +134,91 @@ public class MealRecipeService {
         recipeV2.setSuccess(true);
 
         return recipeV2;
+    }
+
+    public static JsonObject makeRequestAndGetMealAsJsonObject(Client client, String cuisineType) throws CuisineTypeNotValidException {
+        // get the response by the cuisine type
+        JsonObject jsonResponse = client.target(Constants.MEAL_EXTERNAL_URI)
+                .path("api/recipes/v2/")
+                .queryParam("type", "public")
+                .queryParam("app_id", Constants.MEAL_APPLICATION_ID)
+                .queryParam("app_key", Constants.MEAL_APPLICATION_KEY)
+                .queryParam("cuisineType", cuisineType)
+                .queryParam("field", "cuisineType")
+                .request(MediaType.APPLICATION_JSON)
+                .get(JsonObject.class);
+        // number of recipes in the response
+        int count = Integer.parseInt(jsonResponse.get("to").toString());
+
+        // if no recipes found, throw an exception
+        if (count == 0) {
+            throw new CuisineTypeNotValidException(cuisineType);
+        }
+
+        // Finding necessary part of the response
+        JsonObject jsonRecipe = jsonResponse.get("hits").asJsonArray()
+                .get(new Random().nextInt(count)).asJsonObject();
+        String fullRecipeUrl = jsonRecipe.get("_links").asJsonObject()
+                .get("self").asJsonObject()
+                .get("href").toString();
+
+        return client.target(fullRecipeUrl.substring(1, fullRecipeUrl.length() - 1))
+                .request(MediaType.APPLICATION_JSON)
+                .get(JsonObject.class).get("recipe").asJsonObject();
+    }
+
+    public static JsonObject makeRequestAndGetMealV2AsJsonObject(Client client, String cuisineType, String dishType, String apiName, MenuFilter menuFilter) throws CuisineTypeNotValidV2Exception {
+        JsonObject jsonResponse;
+        // get the response by the cuisine type
+        WebTarget target = client.target(Constants.MEAL_EXTERNAL_URI)
+                .path("api/recipes/v2/")
+                .queryParam("type", "public")
+                .queryParam("app_id", Constants.MEAL_APPLICATION_ID)
+                .queryParam("app_key", Constants.MEAL_APPLICATION_KEY)
+                .queryParam("cuisineType", cuisineType)
+                .queryParam("field", "cuisineType");
+
+        if (dishType != null) {
+            target = target.queryParam("dishType", dishType)
+                    .queryParam("field", "dishType");
+        }
+
+        if (menuFilter != null) {
+            if (menuFilter.getConstraints() != null) {
+                target = target.queryParam("field", "healthLabels");
+                for (String contraint : menuFilter.getConstraints()) {
+                    target = target.queryParam("health", contraint);
+                }
+            }
+
+            if (menuFilter.getPresentIngredient() != null) {
+                target = target.queryParam("field", "totalTime");
+                target = target.queryParam("time", (int) Double.parseDouble(menuFilter.getMaxPreparationTime()) / 3);
+
+            }
+        }
+
+        jsonResponse = target.request(MediaType.APPLICATION_JSON)
+                .get(JsonObject.class);
+
+        // number of recipes in the response
+        int count = Integer.parseInt(jsonResponse.get("to").toString());
+
+        // if no recipes found, throw an exception
+        if (count == 0) {
+            throw new CuisineTypeNotValidV2Exception(apiName);
+        }
+
+        // Finding necessary part of the response
+        JsonObject jsonRecipe = jsonResponse.get("hits").asJsonArray()
+                .get(new Random().nextInt(count)).asJsonObject();
+        String fullRecipeUrl = jsonRecipe.get("_links").asJsonObject()
+                .get("self").asJsonObject()
+                .get("href").toString();
+
+        return client.target(fullRecipeUrl.substring(1, fullRecipeUrl.length() - 1))
+                .request(MediaType.APPLICATION_JSON)
+                .get(JsonObject.class).get("recipe").asJsonObject();
+
     }
 }

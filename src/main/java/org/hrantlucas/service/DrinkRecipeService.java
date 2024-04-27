@@ -1,15 +1,23 @@
 package org.hrantlucas.service;
 
+import jakarta.json.JsonArray;
 import jakarta.json.JsonObject;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.MediaType;
+import org.hrantlucas.exception.v2.DrinkNotFoundException;
 import org.hrantlucas.model.drink.DetailedIngredientType;
 import org.hrantlucas.model.drink.DetailedType;
 import org.hrantlucas.model.drink.DrinkRecipe;
 import org.hrantlucas.model.drink.v2.DetailedIngredientTypeV2;
 import org.hrantlucas.model.drink.v2.DrinkRecipeV2;
+import org.hrantlucas.model.menu.MenuFilter;
+import org.hrantlucas.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 public class DrinkRecipeService {
 
@@ -92,5 +100,54 @@ public class DrinkRecipeService {
         drinkRecipeV2.setSuccess(true);
 
         return drinkRecipeV2;
+    }
+
+    public static JsonObject makeRequestAndGetDrinkAsJsonObject(Client client, Boolean alcoholic, MenuFilter menuFilter) throws DrinkNotFoundException {
+        if (alcoholic == null) {
+            alcoholic = new Random().nextBoolean();
+        }
+
+        JsonArray drinks;
+        WebTarget target = client.target(Constants.DRINK_EXTERNAL_URI)
+                .path("/api/json/v1/{apiKey}/filter.php")
+                .resolveTemplate("apiKey", Constants.DRINK_APPLICATION_KEY);
+
+        if (menuFilter != null) {
+            if (menuFilter.getPresentIngredient() != null) {
+                target = target.queryParam("i", menuFilter.getPresentIngredient());
+            }
+            if (menuFilter.getAlcoholic() != null) {
+                target = target.queryParam("a", menuFilter.getAlcoholic() ? "Alcoholic" : "Non_Alcoholic");
+            }
+        }
+
+        if (menuFilter == null || menuFilter.getPresentIngredient() == null && menuFilter.getAlcoholic() == null) {
+            target = target.queryParam("a", alcoholic ? "Alcoholic" : "Non_Alcoholic");
+        }
+
+        String randomDrinkId = "1";
+
+        try {
+            drinks = target.request(MediaType.APPLICATION_JSON)
+                    .get(JsonObject.class)
+                    .getJsonArray("drinks");
+
+            if (drinks == null || drinks.isEmpty()) {
+                return null;
+            }
+
+            randomDrinkId = drinks.getJsonObject(new Random().nextInt(drinks.size())).getString("idDrink");
+        } catch (Exception e) {
+            throw new DrinkNotFoundException("API POST /menu");
+        }
+
+        return client.target(Constants.DRINK_EXTERNAL_URI)
+                .path("/api/json/v1/{apiKey}/lookup.php")
+                .resolveTemplate("apiKey", Constants.DRINK_APPLICATION_KEY)
+                .queryParam("i", randomDrinkId)
+                .request(MediaType.APPLICATION_JSON)
+                .get(JsonObject.class)
+                .getJsonArray("drinks")
+                .getJsonObject(0);
     }
 }
