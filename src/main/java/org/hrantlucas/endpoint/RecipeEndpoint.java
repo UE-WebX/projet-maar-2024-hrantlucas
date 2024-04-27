@@ -12,6 +12,7 @@ import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.hrantlucas.exception.CuisineTypeNotValidException;
+import org.hrantlucas.exception.v2.DrinkNotFoundException;
 import org.hrantlucas.model.drink.DrinkRecipe;
 import org.hrantlucas.model.meal.MealRecipe;
 import org.hrantlucas.service.DrinkRecipeService;
@@ -81,7 +82,7 @@ public class RecipeEndpoint {
                                     schema = @Schema(implementation = DrinkRecipe.class))),
                     @ApiResponse(responseCode = "500", description = "Internal server error")
             })
-    public Response getCocktail(@Parameter(description = "true for alcoholic drink, false for non-alcoholic, nothing for random") @QueryParam("alcoholic") Boolean alcoholic) throws JAXBException {
+    public Response getCocktail(@Parameter(description = "true for alcoholic drink, false for non-alcoholic, nothing for random") @QueryParam("alcoholic") Boolean alcoholic) throws JAXBException, DrinkNotFoundException {
 
         JsonObject jsonFullDrink = DrinkRecipeService.makeRequestAndGetDrinkAsJsonObject(client, alcoholic, null);
         if (jsonFullDrink == null) {

@@ -10,6 +10,7 @@ import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.hrantlucas.exception.v2.CuisineTypeNotValidV2Exception;
+import org.hrantlucas.exception.v2.DrinkNotFoundException;
 import org.hrantlucas.model.drink.v2.DrinkRecipeV2;
 import org.hrantlucas.model.meal.v2.MealRecipeV2;
 import org.hrantlucas.model.menu.Menu;
@@ -38,7 +39,7 @@ public class MenuEndpoint {
     @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getMenu(MenuFilter menuFilter) throws CuisineTypeNotValidV2Exception {
+    public Response getMenu(MenuFilter menuFilter) throws CuisineTypeNotValidV2Exception, DrinkNotFoundException {
         Menu menu = new Menu();
 
         // STARTER

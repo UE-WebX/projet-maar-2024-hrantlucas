@@ -5,6 +5,7 @@ import jakarta.json.JsonObject;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
+import org.hrantlucas.exception.v2.DrinkNotFoundException;
 import org.hrantlucas.model.drink.DetailedIngredientType;
 import org.hrantlucas.model.drink.DetailedType;
 import org.hrantlucas.model.drink.DrinkRecipe;
@@ -101,7 +102,7 @@ public class DrinkRecipeService {
         return drinkRecipeV2;
     }
 
-    public static JsonObject makeRequestAndGetDrinkAsJsonObject(Client client, Boolean alcoholic, MenuFilter menuFilter) {
+    public static JsonObject makeRequestAndGetDrinkAsJsonObject(Client client, Boolean alcoholic, MenuFilter menuFilter) throws DrinkNotFoundException {
         if (alcoholic == null) {
             alcoholic = new Random().nextBoolean();
         }
@@ -124,15 +125,21 @@ public class DrinkRecipeService {
             target = target.queryParam("a", alcoholic ? "Alcoholic" : "Non_Alcoholic");
         }
 
-        drinks = target.request(MediaType.APPLICATION_JSON)
-                .get(JsonObject.class)
-                .getJsonArray("drinks");
+        String randomDrinkId = "1";
 
-        if (drinks == null || drinks.isEmpty()) {
-            return null;
+        try {
+            drinks = target.request(MediaType.APPLICATION_JSON)
+                    .get(JsonObject.class)
+                    .getJsonArray("drinks");
+
+            if (drinks == null || drinks.isEmpty()) {
+                return null;
+            }
+
+            randomDrinkId = drinks.getJsonObject(new Random().nextInt(drinks.size())).getString("idDrink");
+        } catch (Exception e) {
+            throw new DrinkNotFoundException("API POST /menu");
         }
-
-        String randomDrinkId = drinks.getJsonObject(new Random().nextInt(drinks.size())).getString("idDrink");
 
         return client.target(Constants.DRINK_EXTERNAL_URI)
                 .path("/api/json/v1/{apiKey}/lookup.php")
